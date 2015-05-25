@@ -1,0 +1,9 @@
+{% extends 'admin_layout.html' %}
+{% block content %}
+<form action="/setup" method="post">
+  <label for="appuser">Username:</label>
+  <input type="text" name="appuser" id="appuser">
+  <label for="password">Password:</label>
+  <input type="password" name="password" id="password">
+</form>
+{% endblock %}
