@@ -74,6 +74,18 @@ def toggle_approved(id):
     db.toggle_approved(id)
     return redirect(url_for('admin_reviews'))
 
+@app.route('/delete', methods=['POST'])
+@app.route('/delete/<id>')
+@login_required
+def delete_review(id=None):
+    if request.method == 'POST':
+        review = db.delete_review(request.form.get('id'))
+        flash('Review has been deleted.')
+        return redirect(url_for('admin_reviews'))
+    else:
+        review = db.get_review(id)
+        return render_template('admin_delete.html', review=review)
+
 @app.route('/')
 @login_required
 def admin_reviews():

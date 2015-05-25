@@ -72,6 +72,20 @@ class Database(object):
         conn.close()
         return reviews
 
+    def get_review(self, id):
+        conn = self.db_conn()
+        review = conn.execute('select * from reviews where id=?', (id,)).fetchone()
+        conn.close()
+        return review
+
+    def delete_review(self, id):
+        conn = self.db_conn()
+        review = conn.execute('select * from reviews where id=?', (id,)).fetchone()
+        conn.execute('delete from reviews where id=?', (id,))
+        conn.commit()
+        conn.close()
+        return review
+
     def submit(self, review):
         review['id'] = self.new_id()
         review['created'] = datetime.datetime.utcnow().isoformat()
