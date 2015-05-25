@@ -1,7 +1,7 @@
 {% extends 'admin_layout.html' %}
 {% block content %}
 {% for review in reviews %}
-<div class="review">
+<div class="review {% if review.approved %}approved{% else %}not-approved{% endif %}">
   <p class="title">{{ review.title }}</p>
   <p class="text">{{ review.text }}</p>
   <p class="author">{{ review.author }}</p>

@@ -1,0 +1,28 @@
+.approved {
+  background-color: mintcream;
+}
+
+.not-approved {
+  background-color: mistyrose;
+}
+
+.review {
+  box-sizing: border-box;
+  border: 1px solid gray;
+  margin: 1em 0;
+  padding: 1em;
+  border-radius: 7px;
+}
+
+p.title {
+  font-weight: bold;
+}
+
+p.author {
+  text-align: right;
+  color: lightslategray;
+}
+
+p.author::before {
+  content: "\2014";
+}
