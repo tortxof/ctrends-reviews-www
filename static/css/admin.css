@@ -1,3 +1,7 @@
+textarea {
+  height: 12em;
+}
+
 nav {
   background-color: whitesmoke;
   padding: .5em;
