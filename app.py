@@ -76,7 +76,11 @@ def admin_reviews():
 
 @app.route('/reviews.json')
 def get_reviews():
-    pass
+    reviews = db.all_reviews()
+    reviews_out = []
+    for review in reviews:
+        reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})
+    return jsonify(reviews=reviews_out), 200, {'Access-Control-Allow-Origin': '*'}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
