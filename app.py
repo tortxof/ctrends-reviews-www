@@ -74,6 +74,15 @@ def review_import():
     else:
         return render_template('admin_import.html')
 
+@app.route('/export')
+@login_required
+def review_export():
+    reviews = db.all_reviews()
+    reviews_out = []
+    for review in reviews:
+        reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author', 'created', 'approved')})
+    return jsonify(reviews=reviews_out)
+
 @app.route('/toggle-approved/<id>')
 @login_required
 def toggle_approved(id):
