@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
+  <nav>
+    <div class="container">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Log In</a></li>
+        <li><a href="/logout">Log Out</a></li>
+        <li><a href="/import">Import</a></li>
+        <li><a href="/export">Export</a></li>
+      </ul>
+    </div>
+  </nav>
   <div class="container">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
