@@ -3,7 +3,7 @@
 import sqlite3
 import os
 import base64
-import datetime
+import time
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,6 +18,13 @@ class Database(object):
 
     def new_id(self):
         return base64.urlsafe_b64encode(os.urandom(24)).decode()
+
+    def rows_to_dict(self, rows):
+        '''Takes a list of sqlite3.Row and returns a list of dict'''
+        rows_out = []
+        for row in rows:
+            rows_out.append(dict(row))
+        return rows_out
 
     def db_conn(self):
         conn = sqlite3.connect(self.dbfile)
@@ -52,7 +59,7 @@ class Database(object):
         for review in reviews:
             if 'id' not in review:
                 review['id'] = self.new_id()
-            review['created'] = datetime.datetime.utcnow().isoformat()
+            review['created'] = int(time.time())
             review['approved'] = 1
             conn.execute('insert into reviews values (:id, :title, :text, :author, :approved, :created)', review)
         conn.commit()
@@ -64,19 +71,19 @@ class Database(object):
         conn = self.db_conn()
         reviews = conn.execute('select * from reviews').fetchall()
         conn.close()
-        return reviews
+        return self.rows_to_dict(reviews)
 
     def approved_reviews(self):
         conn = self.db_conn()
         reviews = conn.execute('select * from reviews where approved=1').fetchall()
         conn.close()
-        return reviews
+        return self.rows_to_dict(reviews)
 
     def get_review(self, id):
         conn = self.db_conn()
         review = conn.execute('select * from reviews where id=?', (id,)).fetchone()
         conn.close()
-        return review
+        return dict(review)
 
     def delete_review(self, id):
         conn = self.db_conn()
@@ -84,7 +91,7 @@ class Database(object):
         conn.execute('delete from reviews where id=?', (id,))
         conn.commit()
         conn.close()
-        return review
+        return dict(review)
 
     def edit_review(self, review):
         conn = self.db_conn()
@@ -95,7 +102,7 @@ class Database(object):
 
     def submit(self, review):
         review['id'] = self.new_id()
-        review['created'] = datetime.datetime.utcnow().isoformat()
+        review['created'] = int(time.time())
         review['approved'] = 0
         conn = self.db_conn()
         conn.execute('insert into reviews values (:id, :title, :text, :author, :approved, :created)', review)

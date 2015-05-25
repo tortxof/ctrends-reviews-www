@@ -4,6 +4,7 @@ from functools import wraps
 import os
 import codecs
 import json
+import datetime
 
 from flask import Flask, render_template, flash, session, request, redirect, url_for, jsonify
 
@@ -118,6 +119,8 @@ def edit_review(id=None):
 @login_required
 def admin_reviews():
     reviews = db.all_reviews()
+    for review in reviews:
+        review['created'] = datetime.datetime.fromtimestamp(review['created']).strftime('%A %B %d %Y %H:%M:%S')
     return render_template('admin_reviews.html', reviews=reviews)
 
 @app.route('/submit-review', methods=['POST'])

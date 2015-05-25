@@ -5,8 +5,11 @@
   <p class="title">{{ review.title }}</p>
   <p class="text">{{ review.text }}</p>
   <p class="author">{{ review.author }}</p>
-  <a href="/toggle-approved/{{ review.id }}">{% if review.approved %}Approved{% else %}Not Approved{% endif %}</a> -
-  <a href="/edit/{{ review.id }}">Edit</a> - <a href="/delete/{{ review.id }}">Delete</a>
+  <p>
+    <a href="/toggle-approved/{{ review.id }}">{% if review.approved %}Approved{% else %}Not Approved{% endif %}</a> -
+    <a href="/edit/{{ review.id }}">Edit</a> - <a href="/delete/{{ review.id }}">Delete</a>
+  </p>
+  <p>Created: {{ review.created }}</p>
 </div>
 {% endfor %}
 {% endblock %}
