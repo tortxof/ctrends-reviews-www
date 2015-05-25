@@ -1,0 +1,8 @@
+{% extends 'admin_layout.html' %}
+{% block content %}
+<form action="/import" method="post">
+  <label for="json_data">JSON data:</label>
+  <textarea name="json_data" id="json_data"></textarea>
+  <button type="submit">Import</button>
+</form>
+{% endblock %}

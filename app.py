@@ -3,6 +3,7 @@
 from functools import wraps
 import os
 import codecs
+import json
 
 from flask import Flask, render_template, flash, session, request, redirect, url_for, jsonify
 
@@ -55,6 +56,17 @@ def login():
             return render_template('admin_login.html')
     else:
         return render_template('admin_login.html')
+
+@app.route('/import', methods=['GET', 'POST'])
+@login_required
+def review_import():
+    if request.method == 'POST':
+        reviews = json.loads(request.form.get('json_data'))
+        num_imported = db.import_reviews(reviews)
+        flash('{} reviews imported.'.format(num_imported))
+        return redirect(url_for('admin_reviews'))
+    else:
+        return render_template('admin_import.html')
 
 @app.route('/')
 @login_required
