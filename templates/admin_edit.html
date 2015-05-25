@@ -1,0 +1,13 @@
+{% extends 'admin_layout.html' %}
+{% block content %}
+<form action="/edit" method="post">
+  <input type="hidden" name="id" value="{{ review.id }}">
+  <label for="title">Title:</label>
+  <input class="u-full-width" type="text" name="title" id="title" value="{{ review.title }}">
+  <label for="text">Text:</label>
+  <textarea class="u-full-width" name="text" id="text">{{ review.text }}</textarea>
+  <label for="author">Author:</label>
+  <input class="u-full-width" type="text" name="author" id="author" value="{{ review.author }}">
+  <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

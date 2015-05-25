@@ -86,6 +86,13 @@ class Database(object):
         conn.close()
         return review
 
+    def edit_review(self, review):
+        conn = self.db_conn()
+        conn.execute('update reviews set title=:title, text=:text, author=:author where id=:id', review)
+        conn.commit()
+        conn.close()
+        return self.get_review(review.get('id'))
+
     def submit(self, review):
         review['id'] = self.new_id()
         review['created'] = datetime.datetime.utcnow().isoformat()

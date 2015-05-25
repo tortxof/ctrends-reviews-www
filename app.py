@@ -86,6 +86,19 @@ def delete_review(id=None):
         review = db.get_review(id)
         return render_template('admin_delete.html', review=review)
 
+@app.route('/edit', methods=['POST'])
+@app.route('/edit/<id>')
+@login_required
+def edit_review(id=None):
+    if request.method == 'POST':
+        review = request.form.to_dict()
+        db.edit_review(review)
+        flash('Review updated.')
+        return redirect(url_for('admin_reviews'))
+    else:
+        review = db.get_review(id)
+        return render_template('admin_edit.html', review=review)
+
 @app.route('/')
 @login_required
 def admin_reviews():
