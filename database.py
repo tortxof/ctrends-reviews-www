@@ -64,3 +64,11 @@ class Database(object):
         reviews = conn.execute('select * from reviews').fetchall()
         conn.close()
         return reviews
+
+    def submit(self, review):
+        review['id'] = self.new_id()
+        review['created'] = datetime.datetime.utcnow().isoformat()
+        conn = self.db_conn()
+        conn.execute('insert into reviews values (:id, :title, :text, :author, :created)', review)
+        conn.commit()
+        conn.close()

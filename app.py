@@ -74,6 +74,12 @@ def admin_reviews():
     reviews = db.all_reviews()
     return render_template('admin_reviews.html', reviews=reviews)
 
+@app.route('/submit-review', methods=['POST'])
+def submit_review():
+    review = {k: request.form.get(k) for k in ('title', 'text', 'author')}
+    db.submit(review)
+    return redirect('http://ctrends.net/review-thank-you')
+
 @app.route('/reviews.json')
 def get_reviews():
     reviews = db.all_reviews()
