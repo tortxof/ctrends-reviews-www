@@ -68,6 +68,12 @@ def review_import():
     else:
         return render_template('admin_import.html')
 
+@app.route('/toggle-approved/<id>')
+@login_required
+def toggle_approved(id):
+    db.toggle_approved(id)
+    return redirect(url_for('admin_reviews'))
+
 @app.route('/')
 @login_required
 def admin_reviews():
@@ -82,7 +88,7 @@ def submit_review():
 
 @app.route('/reviews.json')
 def get_reviews():
-    reviews = db.all_reviews()
+    reviews = db.approved_reviews()
     reviews_out = []
     for review in reviews:
         reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})

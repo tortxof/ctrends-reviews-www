@@ -11,7 +11,7 @@ class Database(object):
     def __init__(self, dbfile):
         self.dbfile = dbfile
         conn = self.db_conn()
-        conn.execute('create table if not exists reviews (id text primary key not null, title, text, author, created)')
+        conn.execute('create table if not exists reviews (id text primary key not null, title, text, author, approved, created)')
         conn.execute('create table if not exists appusers (appuser text primary key not null, password)')
         conn.commit()
         conn.close()
@@ -53,7 +53,8 @@ class Database(object):
             if 'id' not in review:
                 review['id'] = self.new_id()
             review['created'] = datetime.datetime.utcnow().isoformat()
-            conn.execute('insert into reviews values (:id, :title, :text, :author, :created)', review)
+            review['approved'] = 1
+            conn.execute('insert into reviews values (:id, :title, :text, :author, :approved, :created)', review)
         conn.commit()
         num_rows = conn.total_changes
         conn.close()
@@ -65,10 +66,28 @@ class Database(object):
         conn.close()
         return reviews
 
+    def approved_reviews(self):
+        conn = self.db_conn()
+        reviews = conn.execute('select * from reviews where approved=1').fetchall()
+        conn.close()
+        return reviews
+
     def submit(self, review):
         review['id'] = self.new_id()
         review['created'] = datetime.datetime.utcnow().isoformat()
+        review['approved'] = 0
         conn = self.db_conn()
-        conn.execute('insert into reviews values (:id, :title, :text, :author, :created)', review)
+        conn.execute('insert into reviews values (:id, :title, :text, :author, :approved, :created)', review)
+        conn.commit()
+        conn.close()
+
+    def toggle_approved(self, id):
+        conn = self.db_conn()
+        approved = conn.execute('select approved from reviews where id=?', (id,)).fetchone()[0]
+        if approved != 0:
+            approved = 0
+        else:
+            approved = 1
+        conn.execute('update reviews set approved=? where id=?', (approved, id))
         conn.commit()
         conn.close()
