@@ -57,6 +57,12 @@ def login():
     else:
         return render_template('admin_login.html')
 
+@app.route('/logout')
+def logout():
+    session.pop('admin', None)
+    flash('You are logged out.')
+    return redirect(url_for('login'))
+
 @app.route('/import', methods=['GET', 'POST'])
 @login_required
 def review_import():
