@@ -71,7 +71,8 @@ def review_import():
 @app.route('/')
 @login_required
 def admin_reviews():
-    return render_template('admin_reviews.html')
+    reviews = db.all_reviews()
+    return render_template('admin_reviews.html', reviews=reviews)
 
 @app.route('/reviews.json')
 def get_reviews():

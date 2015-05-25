@@ -58,3 +58,9 @@ class Database(object):
         num_rows = conn.total_changes
         conn.close()
         return num_rows
+
+    def all_reviews(self):
+        conn = self.db_conn()
+        reviews = conn.execute('select * from reviews').fetchall()
+        conn.close()
+        return reviews
