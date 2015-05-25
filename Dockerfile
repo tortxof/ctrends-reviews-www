@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 MAINTAINER Daniel Jones <tortxof@gmail.com>
 
-RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y python3-setuptools sqlite3
+RUN apt-get install -y python3-setuptools
 RUN easy_install3 pip
 COPY requirements.txt /app/
 RUN pip3 install -r /app/requirements.txt
