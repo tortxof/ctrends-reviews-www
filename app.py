@@ -5,6 +5,7 @@ import os
 import codecs
 import json
 import datetime
+import random
 
 from flask import Flask, render_template, flash, session, request, redirect, url_for, jsonify
 
@@ -147,6 +148,12 @@ def get_reviews():
     for review in reviews:
         reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})
     return jsonify(reviews=reviews_out), 200, {'Access-Control-Allow-Origin': '*'}
+
+@app.route('/random-review.json')
+def get_random_review():
+    review = random.choice(db.approved_reviews())
+    review = {k: dict(review).get(k) for k in ('title', 'text', 'author')}
+    return jsonify(review=review), 200, {'Access-Control-Allow-Origin': '*'}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
