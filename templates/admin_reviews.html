@@ -2,7 +2,7 @@
 {% block content %}
 {% for review in reviews %}
 <div class="review {% if review.approved %}approved{% else %}not-approved{% endif %}">
-  <p class="title">{{ review.title }}</p>
+  {% if review.title %}<p class="title">{{ review.title }}</p>{% endif %}
   <p class="text">{{ review.text }}</p>
   <p class="author">{{ review.author }}</p>
   <p>
