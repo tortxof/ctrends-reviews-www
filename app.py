@@ -64,6 +64,17 @@ def logout():
     flash('You are logged out.')
     return redirect(url_for('login'))
 
+@app.route('/new-user', methods=['GET', 'POST'])
+@login_required
+def new_user():
+    if request.method == 'POST':
+        form = request.form.to_dict()
+        appuser = db.new_appuser(form)
+        flash('User {} added.'.format(appuser))
+        return redirect(url_for('admin_reviews'))
+    else:
+        return render_template('admin_new_user.html')
+
 @app.route('/import', methods=['GET', 'POST'])
 @login_required
 def review_import():
