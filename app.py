@@ -81,7 +81,7 @@ def new_user():
 @login_required
 def review_import():
     if request.method == 'POST':
-        reviews = json.loads(request.form.get('json_data'))
+        reviews = json.loads(request.form.get('json_data')).get('reviews')
         num_imported = db.import_reviews(reviews)
         flash('{} reviews imported.'.format(num_imported))
         return redirect(url_for('admin_reviews'))
@@ -94,7 +94,7 @@ def review_export():
     reviews = db.all_reviews()
     reviews_out = []
     for review in reviews:
-        reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author', 'created', 'approved')})
+        reviews_out.append({k: dict(review).get(k, None) for k in ('id', 'title', 'text', 'author', 'created', 'approved')})
     return jsonify(reviews=reviews_out)
 
 @app.route('/toggle-approved/<id>')

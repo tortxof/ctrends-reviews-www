@@ -59,8 +59,10 @@ class Database(object):
         for review in reviews:
             if 'id' not in review:
                 review['id'] = self.new_id()
-            review['created'] = int(time.time())
-            review['approved'] = 1
+            if 'created' not in review:
+                review['created'] = int(time.time())
+            if 'approved' not in review:
+                review['approved'] = 1
             conn.execute('insert into reviews values (:id, :title, :text, :author, :approved, :created)', review)
         conn.commit()
         num_rows = conn.total_changes
