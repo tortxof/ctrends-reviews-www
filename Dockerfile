@@ -1,13 +1,19 @@
-FROM ubuntu:trusty
+FROM python:3.4
 MAINTAINER Daniel Jones <tortxof@gmail.com>
 
-RUN apt-get install -y python3-setuptools
-RUN easy_install3 pip
-COPY requirements.txt /app/
-RUN pip3 install -r /app/requirements.txt
+RUN groupadd -r app && useradd -r -g app app
 
+COPY requirements.txt /app/
 WORKDIR /app
+RUN pip install -r requirements.txt
+COPY . /app/
+
+RUN mkdir /data && chown app:app /data
+
+USER app
+
+VOLUME ["/data"]
 
 EXPOSE 5000
 
-CMD ["python3", "app.py"]
+ENTRYPOINT ["python3", "app.py"]

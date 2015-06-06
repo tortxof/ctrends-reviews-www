@@ -2,7 +2,7 @@
 
 from functools import wraps
 import os
-import codecs
+import stat
 import json
 import datetime
 import random
@@ -13,16 +13,17 @@ import database
 
 app = Flask(__name__)
 
-if not os.path.isfile('key'):
-    with open('key', 'w') as f:
-        print(codecs.encode(os.urandom(32), 'hex').decode(), file=f)
-with open('key') as f:
+if not os.path.isfile('/data/key'):
+    with open('/data/key', 'wb') as f:
+        f.write(os.urandom(32))
+    os.chmod('/data/key', stat.S_IREAD)
+
+with open('/data/key', 'rb') as f:
     app.config['SECRET_KEY'] = f.read()
-if os.path.isfile('app.conf'):
-    app.config.from_pyfile('app.conf')
 
+app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
-db = database.Database('reviews.db')
+db = database.Database('/data/reviews.db')
 
 def login_required(f):
     @wraps(f)
