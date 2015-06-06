@@ -8,6 +8,7 @@ import datetime
 import random
 
 from flask import Flask, render_template, flash, session, request, redirect, url_for, jsonify
+import misaka
 
 import database
 
@@ -113,6 +114,7 @@ def delete_review(id=None):
         return redirect(url_for('admin_reviews'))
     else:
         review = db.get_review(id)
+        review['text'] = misaka.html(review.get('text'))
         return render_template('admin_delete.html', review=review)
 
 @app.route('/edit', methods=['POST'])
@@ -133,6 +135,7 @@ def edit_review(id=None):
 def admin_reviews():
     reviews = db.all_reviews()
     for review in reviews:
+        review['text'] = misaka.html(review.get('text'))
         review['created'] = datetime.datetime.fromtimestamp(review['created']).strftime('%A %B %d %Y %H:%M:%S')
     return render_template('admin_reviews.html', reviews=reviews)
 
@@ -147,12 +150,14 @@ def get_reviews():
     reviews = db.approved_reviews()
     reviews_out = []
     for review in reviews:
+        review['text'] = misaka.html(review.get('text'))
         reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})
     return jsonify(reviews=reviews_out), 200, {'Access-Control-Allow-Origin': '*'}
 
 @app.route('/random-review.json')
 def get_random_review():
     review = random.choice(db.approved_reviews())
+    review['text'] = misaka.html(review.get('text'))
     review = {k: dict(review).get(k) for k in ('title', 'text', 'author')}
     return jsonify(review=review), 200, {'Access-Control-Allow-Origin': '*'}
 

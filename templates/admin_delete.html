@@ -2,7 +2,9 @@
 {% block content %}
 <div class="review">
   {% if review.title %}<p class="title">{{ review.title }}</p>{% endif %}
-  <p class="text">{{ review.text }}</p>
+  <div class="text">
+    {{ review.text|safe }}
+  </div>
   <p class="author">{{ review.author }}</p>
 </div>
 

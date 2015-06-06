@@ -3,7 +3,9 @@
 {% for review in reviews %}
 <div class="review {% if review.approved %}approved{% else %}not-approved{% endif %}">
   {% if review.title %}<p class="title">{{ review.title }}</p>{% endif %}
-  <p class="text">{{ review.text }}</p>
+  <div class="text">
+    {{ review.text|safe }}
+  </div>
   <p class="author">{{ review.author }}</p>
   <p>
     <a href="/toggle-approved/{{ review.id }}">{% if review.approved %}Approved{% else %}Not Approved{% endif %}</a> -
