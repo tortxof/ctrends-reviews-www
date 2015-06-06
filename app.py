@@ -114,7 +114,10 @@ def delete_review(id=None):
         return redirect(url_for('admin_reviews'))
     else:
         review = db.get_review(id)
-        review['text'] = misaka.html(review.get('text'))
+        if review['approved'] == 1:
+            review['text'] = misaka.html(review.get('text'))
+        else:
+            review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
         return render_template('admin_delete.html', review=review)
 
 @app.route('/edit', methods=['POST'])
@@ -135,7 +138,10 @@ def edit_review(id=None):
 def admin_reviews():
     reviews = db.all_reviews()
     for review in reviews:
-        review['text'] = misaka.html(review.get('text'))
+        if review['approved'] == 1:
+            review['text'] = misaka.html(review.get('text'))
+        else:
+            review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
         review['created'] = datetime.datetime.fromtimestamp(review['created']).strftime('%A %B %d %Y %H:%M:%S')
     return render_template('admin_reviews.html', reviews=reviews)
 
