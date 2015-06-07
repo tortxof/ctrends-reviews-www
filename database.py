@@ -71,13 +71,13 @@ class Database(object):
 
     def all_reviews(self):
         conn = self.db_conn()
-        reviews = conn.execute('select * from reviews').fetchall()
+        reviews = conn.execute('select * from reviews order by created desc').fetchall()
         conn.close()
         return self.rows_to_dict(reviews)
 
     def approved_reviews(self):
         conn = self.db_conn()
-        reviews = conn.execute('select * from reviews where approved=1').fetchall()
+        reviews = conn.execute('select * from reviews where approved=1 order by created desc').fetchall()
         conn.close()
         return self.rows_to_dict(reviews)
 
