@@ -26,6 +26,13 @@ app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
 db = database.Database('/data/reviews.db')
 
+def render_markdown(review):
+    if review['approved'] == 1:
+        review['text'] = misaka.html(review.get('text'))
+    else:
+        review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
+    return review
+
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -113,11 +120,7 @@ def delete_review(id=None):
         flash('Review has been deleted.')
         return redirect(url_for('admin_reviews'))
     else:
-        review = db.get_review(id)
-        if review['approved'] == 1:
-            review['text'] = misaka.html(review.get('text'))
-        else:
-            review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
+        review = render_markdown(db.get_review(id))
         return render_template('admin_delete.html', review=review)
 
 @app.route('/edit', methods=['POST'])
@@ -138,10 +141,7 @@ def edit_review(id=None):
 def admin_reviews():
     reviews = db.all_reviews()
     for review in reviews:
-        if review['approved'] == 1:
-            review['text'] = misaka.html(review.get('text'))
-        else:
-            review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
+        review = render_markdown(review)
         review['created'] = datetime.datetime.fromtimestamp(review['created']).strftime('%A %B %d %Y %H:%M:%S')
     return render_template('admin_reviews.html', reviews=reviews)
 
@@ -156,14 +156,14 @@ def get_reviews():
     reviews = db.approved_reviews()
     reviews_out = []
     for review in reviews:
-        review['text'] = misaka.html(review.get('text'))
+        review = render_markdown(review)
         reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})
     return jsonify(reviews=reviews_out), 200, {'Access-Control-Allow-Origin': '*'}
 
 @app.route('/random-review.json')
 def get_random_review():
     review = random.choice(db.approved_reviews())
-    review['text'] = misaka.html(review.get('text'))
+    review = render_markdown(review)
     review = {k: dict(review).get(k) for k in ('title', 'text', 'author')}
     return jsonify(review=review), 200, {'Access-Control-Allow-Origin': '*'}
 
