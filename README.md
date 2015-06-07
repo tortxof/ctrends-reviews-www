@@ -8,27 +8,33 @@ reviews.
 
 ### Setup
 
-Clone the repo on the server you are hosting from.
+Clone the repo and build the docker image.
 
-    git clone sol.djones.co:/srv/software/git/ctrends-reviews-www.git
+    git clone http://gitlab.djones.co/tortxof/ctrends-reviews-www.git
     cd ctrends-reviews-www
-
-Build the docker image.
-
-    docker build -t local/ctrends-reviews .
+    docker build -t tortxof/ctrends-reviews
 
 Run the image.
 
-    docker run -d --restart always --name ctrends-reviews -p 8009:5000 -v $(pwd):/app local/ctrends-reviews
+    docker run -d --restart always --name ctrends-reviews -p 8009:5000 tortxof/ctrends-reviews
 
-A couple of files will be created.
+A couple of files will be created in `/data` in the container.
 
-- reviews.db
+- /data/reviews.db
 
     This is the sqlite3 database. You should back this up regularly.
 
-- key
+- /data/key
 
     This is the flask `SECRET_KEY`. It should obviously be kept secret.
 
-If you wish to pass additional configuration to flask, put it in `app.conf`.
+
+Create a data container. The database and key file will remain in this data
+container when you remove the app container.
+
+    docker create --name ctrends-reviews-data --volumes-from ctrends-reviews busybox
+
+To update the app, stop and remove the app container, rebuild the image, and
+start a new container like this.
+
+    docker run -d --restart always --name ctrends-reviews --volumes-from ctrends-reviews-data -p 8009:5000 tortxof/ctrends-reviews
