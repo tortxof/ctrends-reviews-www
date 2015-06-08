@@ -7,7 +7,7 @@ import json
 import datetime
 import random
 
-from flask import Flask, render_template, flash, session, request, redirect, url_for, jsonify
+from flask import Flask, Markup, render_template, flash, session, request, redirect, url_for, jsonify
 import misaka
 
 import database
@@ -28,9 +28,9 @@ db = database.Database('/data/reviews.db')
 
 def render_markdown(review):
     if review['approved'] == 1:
-        review['text'] = misaka.html(review.get('text'))
+        review['text'] = Markup(misaka.html(review.get('text')))
     else:
-        review['text'] = '<pre><code>{}</code></pre>'.format(review.get('text'))
+        review['text'] = Markup.escape(review.get('text'))
     return review
 
 def login_required(f):
