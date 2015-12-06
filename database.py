@@ -16,15 +16,14 @@ class Database(object):
         conn.commit()
         conn.close()
 
-    def new_id(self):
+    @staticmethod
+    def new_id():
         return base64.urlsafe_b64encode(os.urandom(24)).decode()
 
-    def rows_to_dict(self, rows):
+    @staticmethod
+    def rows_to_dict(rows):
         '''Takes a list of sqlite3.Row and returns a list of dict'''
-        rows_out = []
-        for row in rows:
-            rows_out.append(dict(row))
-        return rows_out
+        return [dict(row) for row in rows]
 
     def db_conn(self):
         conn = sqlite3.connect(self.dbfile)
