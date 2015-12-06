@@ -102,7 +102,7 @@ def review_export():
     reviews = db.all_reviews()
     reviews_out = []
     for review in reviews:
-        reviews_out.append({k: dict(review).get(k, None) for k in ('id', 'title', 'text', 'author', 'created', 'approved')})
+        reviews_out.append({k: dict(review).get(k) for k in ('id', 'title', 'text', 'author', 'created', 'approved')})
     return jsonify(reviews=reviews_out)
 
 @app.route('/toggle-approved/<id>')
@@ -157,7 +157,7 @@ def get_reviews():
     reviews_out = []
     for review in reviews:
         review = render_markdown(review)
-        reviews_out.append({k: dict(review).get(k, None) for k in ('title', 'text', 'author')})
+        reviews_out.append({k: dict(review).get(k) for k in ('title', 'text', 'author')})
     return jsonify(reviews=reviews_out), 200, {'Access-Control-Allow-Origin': '*'}
 
 @app.route('/random-review.json')
